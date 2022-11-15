@@ -9,12 +9,16 @@ type EnumValues =
  * Prevents using the same value twice under different keys.
  * Prevents using any of the enum's method names as keys
  */
-type ValidValues<T extends EnumValues> = {
-  [K in keyof T]: T[K] extends T[Exclude<keyof T, K>]
+type ValidValues<Values extends EnumValues> = {
+  [K in keyof Values]: Values[K] extends Values[Exclude<keyof Values, K>]
     ? 'All values must be unique'
     : K extends InvalidKeys
     ? 'Keys can not include Enum method names'
-    : T[K]
+    : Values[K]
+}
+
+type KeyOf<Values extends EnumValues, V extends Values[keyof Values]> = keyof {
+  [K in keyof Values as Values[K] extends V ? K : never]: Values[K]
 }
 
 export type Enum<Values extends EnumValues> = Values &
@@ -28,10 +32,10 @@ export type EnumValue<E extends Enum<any>> = E extends Enum<infer Values>
   ? Values[keyof Values]
   : never
 
-const createMethods = <V extends Record<string, any>>(values: V) => {
+const createMethods = <Values extends Record<string, any>>(values: Values) => {
   values = { ...values }
-  const enumKeys = new Set<keyof V>(Object.keys(values))
-  const enumValues = new Set<V[keyof V]>(Object.values(values))
+  const enumKeys = new Set<keyof Values>(Object.keys(values))
+  const enumValues = new Set<Values[keyof Values]>(Object.values(values))
 
   if (enumValues.size !== enumKeys.size) {
     throw new TypeError('Enumerated values must be unique')
@@ -44,13 +48,13 @@ const createMethods = <V extends Record<string, any>>(values: V) => {
   const methods = {
     keys: () => [...enumKeys],
     values: () => [...enumValues],
-    isKey: (maybeKey: unknown): maybeKey is keyof V => {
+    isKey: (maybeKey: unknown): maybeKey is keyof Values => {
       return enumKeys.has(maybeKey as any)
     },
-    isValue: (maybeValue: unknown): maybeValue is V[keyof V] => {
+    isValue: (maybeValue: unknown): maybeValue is Values[keyof Values] => {
       return enumValues.has(maybeValue as any)
     },
-    keyOf: (value: V[keyof V]): keyof V => {
+    keyOf: <V extends Values[keyof Values]>(value: V): KeyOf<Values, V> => {
       return reverseMapping[value]
     },
   }

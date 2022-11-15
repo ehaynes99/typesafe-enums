@@ -2,19 +2,19 @@ import { createEnum } from '../src/create-enum'
 
 describe('Enum', () => {
   const TestEnum = createEnum({
-    first: 'one',
-    second: 'two',
-    third: 'three',
+    First: 'one',
+    Second: 'two',
+    Third: 'three',
   })
 
   it('has values from original', async () => {
-    expect(TestEnum.first).toBe('one')
-    expect(TestEnum.second).toBe('two')
-    expect(TestEnum.third).toBe('three')
+    expect(TestEnum.First).toBe('one')
+    expect(TestEnum.Second).toBe('two')
+    expect(TestEnum.Third).toBe('three')
   })
 
   it('checks if random value is a key', async () => {
-    expect(TestEnum.isKey('first')).toBe(true)
+    expect(TestEnum.isKey('First')).toBe(true)
     expect(TestEnum.isKey('seventh')).toBe(false)
   })
 
@@ -24,14 +24,17 @@ describe('Enum', () => {
   })
 
   it('performs a reverse lookup of values', async () => {
-    expect(TestEnum.keyOf('one')).toBe('first')
-    expect(TestEnum.keyOf('two')).toBe('second')
-    expect(TestEnum.keyOf('three')).toBe('third')
+    const keyOfOne: 'First' = TestEnum.keyOf('one')
+    expect(keyOfOne).toBe('First')
+    const keyOfTwo: 'Second' = TestEnum.keyOf('two')
+    expect(keyOfTwo).toBe('Second')
+    const keyOfThree: 'Third' = TestEnum.keyOf('three')
+    expect(keyOfThree).toBe('Third')
   })
 
   it('enumerates the keys', async () => {
     const keys = TestEnum.keys()
-    expect(keys).toEqual(['first', 'second', 'third'])
+    expect(keys).toEqual(['First', 'Second', 'Third'])
   })
 
   it('enumerates the values', async () => {
@@ -41,7 +44,7 @@ describe('Enum', () => {
 
   it('has only the enum keys as enumerable properties', async () => {
     const keys = Object.keys(TestEnum)
-    expect(keys).toEqual(['first', 'second', 'third'])
+    expect(keys).toEqual(['First', 'Second', 'Third'])
   })
 
   it('has only the enum values as enumerable properties', async () => {
@@ -68,9 +71,9 @@ describe('Enum', () => {
     expect(() => {
       createEnum({
         // @ts-expect-error duplicate values
-        first: 'one',
+        First: 'one',
         // @ts-expect-error duplicate values
-        second: 'one',
+        Second: 'one',
       })
     }).toThrow(new TypeError('Enumerated values must be unique'))
   })
