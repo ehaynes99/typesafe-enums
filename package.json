@@ -9,7 +9,10 @@
     "dist",
     "README.md"
   ],
-  "keywords": ["typescript", "enum"],
+  "keywords": [
+    "typescript",
+    "enum"
+  ],
   "prettier": "eslint-config-erich/.prettierrc.js",
   "scripts": {
     "build": "tsc -b tsconfig.build.json",
